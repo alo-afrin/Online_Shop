@@ -1,52 +1,40 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import userRouters from "./routes/user.router.js";
-import productRoutes from "./routes/product.router.js";
-import orderRoutes from "./routes/order.router.js";
-import cartRoutes from "./routes/cart.router.js";
+import cookieParser from "cookie-parser";
 
+// Routers
+import authRouter from "./routes/auth.router.js";
+import userRouter from "./routes/user.router.js";
+import productRouter from "./routes/product.router.js";
+import cartRouter from "./routes/cart.router.js";
+import orderRouter from "./routes/order.router.js";
 
-const port = process.env.PORT || 8000;
+dotenv.config();
 const app = express();
+const PORT = process.env.PORT || 8000;
+
+// Middleware
 app.use(express.json());
+app.use(cookieParser());
 
-dotenv.config()
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log(" MongoDB Connected"))
+  .catch(err => {
+    console.error(" MongoDB Error:", err);
+    process.exit(1);
+  });
 
-mongoose.connect(process.env.MONGO_URI,{
-useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(
-    ()=>{console.log("MongoDB is Connected.")}).catch(
-    (error)=>{console.log(error)})
+// Routes
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+app.use("/api/products", productRouter);
+app.use("/api/carts", cartRouter);
+app.use("/api/orders", orderRouter);
 
-app.use("/api/users",userRouters);
-app.use("/api/products", productRoutes);
-app.use("/api/orders", orderRoutes);
-app.use("/api/carts", cartRoutes);
+// Health check
+app.get("/", (req, res) => res.send("API is running"));
 
-app.post("/api/users/seed", async (req, res) => {
-  try
-  {
-    await User.deleteMany();
-
-    // Insert all users
-    const insertedUsers = await User.insertMany(users);
-
-    res.status(201).json({
-      message: "All users inserted successfully!",
-      users: insertedUsers
-    });
-  } 
-  catch (err) 
-  {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-app.listen(port,()=>{
-    console.log(`Server is running in http://localhost:${port}`)
-})
-
-
+// Start server
+app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

@@ -13,7 +13,6 @@ const productValidator = z.object
   imageUrl: z.string().url("Invalid image URL").optional()
 });
 
-//  Get all products
 export const getProducts = async (req, res) => {
   try
   {
@@ -30,7 +29,7 @@ export const getProducts = async (req, res) => {
   }
 };
 
-// Get single product by ID
+
 export const getProduct = async (req, res) => {
   try 
   {
@@ -53,7 +52,7 @@ export const getProduct = async (req, res) => {
   }
 };
 
-//  Create a new product
+
 export const createProduct = async (req, res) => {
   try 
   {
@@ -128,7 +127,7 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-// Delete product by ID
+
 export const deleteProduct = async (req, res) => {
   try 
   {

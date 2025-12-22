@@ -1,29 +1,29 @@
 import express from "express";
-import { 
-  getUsers, 
-  getUser, 
-  createUser, 
-  updateUser, 
-  deleteUser 
+import { authenticate, authorizeRole } from "../middlewares/auth.middleware.js";
+
+import {
+  loginUser,
+  refreshToken,
+  getUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser
 } from "../controllers/user.controller.js";
-import { required } from "zod/mini";
 
 const router = express.Router();
 
-//  Get all users
-router.get("/", getUsers);
+// PUBLIC ROUTES
+router.post("/register", createUser);   // Fixed
+router.post("/login", loginUser);
+router.post("/refresh", refreshToken);
 
-// Get single user
-router.get("/:id", getUser);
+// PROTECTED ROUTES
+router.get("/", authenticate, getUsers);
+router.get("/:id", authenticate, getUser);
 
-
-// Create a new user
-router.post("/", createUser);
-
-// Update an existing user
-router.put("/:id", updateUser);
-
-// Delete a user
-router.delete("/:id", deleteUser);
+// ADMIN ONLY ROUTES
+router.put("/:id", authenticate, authorizeRole(["admin"]), updateUser);
+router.delete("/:id", authenticate, authorizeRole(["admin"]), deleteUser);
 
 export default router;
