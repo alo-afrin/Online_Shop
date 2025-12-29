@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 
+
 // Verify JWT token
 export const authenticate = async (req, res, next) => {
   try {

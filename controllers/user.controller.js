@@ -1,9 +1,9 @@
 import User from "../models/user.model.js";
 import { z } from "zod";
-import bcrypt from "bcryptjs";  // Added for password hashing & compare
+import bcrypt from "bcryptjs";  
 
 const userValidator = z.object({
-  name: z.string().min(2, "Name is too short."),
+  username: z.string().min(2, "Name is too short."),
   email: z.string().email("Invalid email address."),
   age: z.number().int().positive("Age must be a positive integer."),
   password: z.string().min(6,"at least 6 charecter"),
@@ -15,7 +15,7 @@ const userValidator = z.object({
 });
 
 const userUpdateValidator = z.object({
-  name: z.string().optional(),
+  username: z.string().optional(),
   email: z.string().email().optional(),
   age: z.number().optional(),
   password: z.string().min(6).optional(),
@@ -79,6 +79,7 @@ export const updateUser = async (req, res) => {
       parsedData.password = await bcrypt.hash(parsedData.password, 10);
     }
 
+
     const updatedUser = await User.findByIdAndUpdate(userId, parsedData, { new: true });
     if (!updatedUser) return res.status(404).json({ message: "User not found" });
 
@@ -92,7 +93,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
-// DELETE USER
+
 export const deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -104,7 +105,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// LOGIN USER
+
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -112,7 +113,6 @@ export const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(401).json({ message: "User not found" });
 
-    // Compare password using bcrypt
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) return res.status(401).json({ message: "Incorrect password" });
 
@@ -120,7 +120,6 @@ export const loginUser = async (req, res) => {
     const accessToken = createAccessToken(payload);
     const refreshToken = createRefreshToken(payload);
 
-    // Save refresh token in DB
     await RefreshToken.create({
       token: refreshToken,
       userId: user._id,
@@ -133,7 +132,6 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// REFRESH TOKEN
 export const refreshToken = async (req, res) => {
   try {
     const token = req.body.refreshToken;

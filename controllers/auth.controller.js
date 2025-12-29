@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || "defaultsecret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "supersecretrefreshkey";
+const REFRESH_TOKEN_EXP = process.env.REFRESH_TOKEN_EXP || "7d"; 
 
 
 // Generate JWT token
@@ -45,6 +47,12 @@ export const register = async (req, res) => {
     // Generate token
     const token = generateToken(user._id);
 
+     const refreshToken = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: process.env.REFRESH_TOKEN_EXP }
+    );
+
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -62,7 +70,8 @@ export const register = async (req, res) => {
           email: user.email,
           role: user.role
         },
-        token
+        token,
+        refreshToken 
       }
     });
   } catch (error) {
@@ -107,6 +116,12 @@ export const login = async (req, res) => {
     // Generate token
     const token = generateToken(user._id);
 
+    const refreshToken = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: process.env.REFRESH_TOKEN_EXP }
+    );
+
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -123,7 +138,8 @@ export const login = async (req, res) => {
           email: user.email,
           role: user.role
         },
-        token
+        token,
+        refreshToken
       }
     });
   } catch (error) {
@@ -135,6 +151,28 @@ export const login = async (req, res) => {
   }
 };
 
+export const refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) return res.status(401).json({ success: false, message: "No refresh token" });
+
+    // Verify refresh token
+    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    const user = await User.findById(payload.userId);
+    if (!user) return res.status(401).json({ success: false, message: "User not found" });
+
+    // Generate new access token
+    const newAccessToken = generateToken(user._id);
+
+    res.status(200).json({
+      success: true,
+      accessToken: newAccessToken
+    });
+  } catch (error) {
+    res.status(401).json({ success: false, message: "Invalid refresh token" });
+  }
+};
 // Get current user profile
 export const getProfile = async (req, res) => {
   try {

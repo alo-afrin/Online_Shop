@@ -33,6 +33,11 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/orders", orderRouter);
 
+// server.js
+app.post('/users/refresh', (req, res) => {
+    res.send('Token refreshed!');
+});
+
 // Health check
 app.get("/", (req, res) => res.send("API is running"));
 
