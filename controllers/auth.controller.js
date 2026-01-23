@@ -22,7 +22,6 @@ export const register = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({
       $or: [{ email }, { username }]
     });
@@ -56,8 +55,7 @@ export const register = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      //secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000 
     });
 
     res.status(201).json({
@@ -87,8 +85,6 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { identifier, password } = req.body;
-
-    // Find user by email or username
     const user = await User.findOne({
       $or: [
         { email: identifier.toLowerCase() },
@@ -103,7 +99,6 @@ export const login = async (req, res) => {
       });
     }
 
-    // Check password
     const isPasswordValid = await user.comparePassword(password);
 
     if (!isPasswordValid) {
@@ -112,8 +107,6 @@ export const login = async (req, res) => {
         message: 'Invalid credentials'
       });
     }
-
-    // Generate token
     const token = generateToken(user._id);
 
     const refreshToken = jwt.sign(
@@ -125,7 +118,7 @@ export const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000 
     });
 
     res.status(200).json({
@@ -155,14 +148,11 @@ export const refreshToken = async (req, res) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) return res.status(401).json({ success: false, message: "No refresh token" });
-
-    // Verify refresh token
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
     const user = await User.findById(payload.userId);
     if (!user) return res.status(401).json({ success: false, message: "User not found" });
 
-    // Generate new access token
     const newAccessToken = generateToken(user._id);
 
     res.status(200).json({
@@ -173,7 +163,6 @@ export const refreshToken = async (req, res) => {
     res.status(401).json({ success: false, message: "Invalid refresh token" });
   }
 };
-// Get current user profile
 export const getProfile = async (req, res) => {
   try {
     res.status(200).json({

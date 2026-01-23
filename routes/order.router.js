@@ -12,7 +12,6 @@ const router = express.Router();
 
 router.get("/user/:userId", getUserOrders);
 
-// CRUD 
 router.get("/", getOrders);
 router.get("/:id", getOrder);
 router.post("/", createOrder);

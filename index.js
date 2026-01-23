@@ -20,7 +20,6 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 app.use(cookieParser());
 
-// MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log(" MongoDB Connected"))
   .catch(err => {
@@ -28,7 +27,6 @@ mongoose.connect(process.env.MONGO_URI)
     process.exit(1);
   });
 
-// Routes
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
@@ -37,13 +35,10 @@ app.use("/api/orders", orderRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/reviews", reviewRouter);
 
-// server.js
 app.post('/users/refresh', (req, res) => {
     res.send('Token refreshed!');
 });
-
-// Health check
 app.get("/", (req, res) => res.send("API is running"));
 
-// Start server
+
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

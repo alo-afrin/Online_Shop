@@ -2,9 +2,6 @@ import Review from "../models/review.model.js";
 import Product from "../models/product.model.js";
 import { z } from "zod";
 
-/* =======================
-   Zod Review Validator
-======================= */
 const reviewValidator = z.object({
   productId: z.string().min(1, "Product ID required"),
   rating: z.number().min(1).max(5, "Rating must be between 1 and 5"),
@@ -13,9 +10,6 @@ const reviewValidator = z.object({
   isVerifiedPurchase: z.boolean().optional(),
 });
 
-/* =======================
-   Get All Reviews
-======================= */
 export const getReviews = async (req, res) => {
   try {
     const { productId, userId, minRating, page = 1, limit = 10 } = req.query;
@@ -64,9 +58,6 @@ export const getReviews = async (req, res) => {
   }
 };
 
-/* =======================
-   Get Product Reviews
-======================= */
 export const getProductReviews = async (req, res) => {
   try {
     const { id } = req.params;
@@ -117,9 +108,6 @@ export const getProductReviews = async (req, res) => {
   }
 };
 
-/* =======================
-   Get Single Review
-======================= */
 export const getReview = async (req, res) => {
   try {
     const { id } = req.params;
@@ -147,10 +135,6 @@ export const getReview = async (req, res) => {
     });
   }
 };
-
-/* =======================
-   Create Review
-======================= */
 export const createReview = async (req, res) => {
   try {
     const validatedData = reviewValidator.parse(req.body);
@@ -205,9 +189,6 @@ export const createReview = async (req, res) => {
   }
 };
 
-/* =======================
-   Update Review
-======================= */
 export const updateReview = async (req, res) => {
   try {
     const { id } = req.params;
@@ -256,9 +237,6 @@ export const updateReview = async (req, res) => {
   }
 };
 
-/* =======================
-   Delete Review
-======================= */
 export const deleteReview = async (req, res) => {
   try {
     const { id } = req.params;
@@ -294,9 +272,6 @@ export const deleteReview = async (req, res) => {
   }
 };
 
-/* =======================
-   Mark Review as Helpful
-======================= */
 export const markReviewHelpful = async (req, res) => {
   try {
     const { id } = req.params;

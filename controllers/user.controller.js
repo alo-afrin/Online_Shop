@@ -53,8 +53,6 @@ export const getUser = async (req, res) => {
 export const createUser = async (req, res) => {
   try {
     const parsedData = userValidator.parse(req.body);
-
-    // Hash password before saving
     const hashedPassword = await bcrypt.hash(parsedData.password, 10);
     parsedData.password = hashedPassword;
 
@@ -73,8 +71,6 @@ export const updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
     const parsedData = userUpdateValidator.parse(req.body);
-
-    // Hash password if provided
     if (parsedData.password) {
       parsedData.password = await bcrypt.hash(parsedData.password, 10);
     }

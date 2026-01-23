@@ -1,9 +1,6 @@
 import Product from "../models/product.model.js";
 import { z } from "zod";
 
-/* =======================
-   Zod Product Validator
-======================= */
 const productValidator = z.object({
   name: z.string().min(2, "Product name too short"),
   price: z.number().positive("Price must be positive"),
@@ -15,10 +12,6 @@ const productValidator = z.object({
   imageUrl: z.string().url("Invalid image URL").optional(),
 });
 
-/* =======================
-   Get All Products
-   Search + Filter + Sort + Pagination
-======================= */
 export const getProducts = async (req, res) => {
   try {
     const {
@@ -33,34 +26,34 @@ export const getProducts = async (req, res) => {
 
     const query = {};
 
-    // 🔍 Search by name
+    //  Search by name
     if (search) {
       query.name = { $regex: search, $options: "i" };
     }
 
-    // 📦 Filter by category
+    // Filter by category
     if (category) {
       query.category = category;
     }
 
-    // 💰 Price filter
+    // Price filter
     if (minPrice || maxPrice) {
       query.price = {};
       if (minPrice) query.price.$gte = Number(minPrice);
       if (maxPrice) query.price.$lte = Number(maxPrice);
     }
 
-    // 🔃 Sorting
+    // Sorting
     let sortOption = {};
     if (sort === "price-low") {
       sortOption = { price: 1 };
     } else if (sort === "price-high") {
       sortOption = { price: -1 };
     } else {
-      sortOption = { createdAt: -1 }; // latest
+      sortOption = { createdAt: -1 }; 
     }
 
-    // 📄 Pagination
+    // Pagination
     const skip = (Number(page) - 1) * Number(limit);
 
     const products = await Product.find(query)
@@ -84,9 +77,6 @@ export const getProducts = async (req, res) => {
   }
 };
 
-/* =======================
-   Get Single Product
-======================= */
 export const getProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -104,10 +94,6 @@ export const getProduct = async (req, res) => {
     });
   }
 };
-
-/* =======================
-   Create Product
-======================= */
 export const createProduct = async (req, res) => {
   try {
     const parsedData = productValidator.parse(req.body);
@@ -133,9 +119,6 @@ export const createProduct = async (req, res) => {
   }
 };
 
-/* =======================
-   Update Product
-======================= */
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -169,9 +152,6 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-/* =======================
-   Delete Product
-======================= */
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;

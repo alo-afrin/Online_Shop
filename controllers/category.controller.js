@@ -1,19 +1,12 @@
 import Category from "../models/category.model.js";
 import { z } from "zod";
 
-/* =======================
-   Zod Category Validator
-======================= */
 const categoryValidator = z.object({
   name: z.string().min(2, "Category name too short"),
   description: z.string().optional(),
   imageUrl: z.string().url("Invalid image URL").optional(),
   isActive: z.boolean().optional(),
 });
-
-/* =======================
-   Get All Categories
-======================= */
 export const getCategories = async (req, res) => {
   try {
     const { search, isActive, page = 1, limit = 10 } = req.query;
@@ -56,9 +49,6 @@ export const getCategories = async (req, res) => {
   }
 };
 
-/* =======================
-   Get Single Category
-======================= */
 export const getCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -85,9 +75,6 @@ export const getCategory = async (req, res) => {
   }
 };
 
-/* =======================
-   Create Category
-======================= */
 export const createCategory = async (req, res) => {
   try {
     const validatedData = categoryValidator.parse(req.body);
@@ -127,10 +114,6 @@ export const createCategory = async (req, res) => {
     });
   }
 };
-
-/* =======================
-   Update Category
-======================= */
 export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -170,9 +153,6 @@ export const updateCategory = async (req, res) => {
   }
 };
 
-/* =======================
-   Delete Category
-======================= */
 export const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;

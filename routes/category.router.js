@@ -11,11 +11,11 @@ import { authenticate, authorizeRole } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-/* ===== Public Routes ===== */
+//Public Routes 
 router.get("/", getCategories);
 router.get("/:id", getCategory);
 
-/* ===== Admin Routes ===== */
+//Admin Routes 
 router.post(
   "/",
   authenticate,

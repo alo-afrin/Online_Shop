@@ -13,12 +13,11 @@ import { authenticate, authorizeRole } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-/* ===== Public Routes ===== */
 router.get("/", getReviews);
 router.get("/product/:id", getProductReviews);
 router.get("/:id", getReview);
 
-/* ===== User Routes ===== */
+//User Routes 
 router.post(
   "/",
   authenticate,
@@ -37,7 +36,6 @@ router.delete(
   deleteReview
 );
 
-/* ===== Helpful Route ===== */
 router.patch(
   "/:id/helpful",
   markReviewHelpful
