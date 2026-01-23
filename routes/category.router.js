@@ -1,40 +1,40 @@
 import express from "express";
-import { 
-  getProducts, 
-  getProduct, 
-  createProduct, 
-  updateProduct, 
-  deleteProduct 
-} from "../controllers/product.controller.js";
+import {
+  getCategories,
+  getCategory,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "../controllers/category.controller.js";
 
 import { authenticate, authorizeRole } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
 /* ===== Public Routes ===== */
-router.get("/", getProducts);
-router.get("/:id", getProduct);
+router.get("/", getCategories);
+router.get("/:id", getCategory);
 
 /* ===== Admin Routes ===== */
 router.post(
   "/",
   authenticate,
   authorizeRole(["admin"]),
-  createProduct
+  createCategory
 );
 
 router.put(
   "/:id",
   authenticate,
   authorizeRole(["admin"]),
-  updateProduct
+  updateCategory
 );
 
 router.delete(
   "/:id",
   authenticate,
   authorizeRole(["admin"]),
-  deleteProduct
+  deleteCategory
 );
 
 export default router;

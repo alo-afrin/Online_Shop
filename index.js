@@ -9,6 +9,8 @@ import userRouter from "./routes/user.router.js";
 import productRouter from "./routes/product.router.js";
 import cartRouter from "./routes/cart.router.js";
 import orderRouter from "./routes/order.router.js";
+import categoryRouter from "./routes/category.router.js";
+import reviewRouter from "./routes/review.router.js";
 
 dotenv.config();
 const app = express();
@@ -32,6 +34,8 @@ app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/categories", categoryRouter);
+app.use("/api/reviews", reviewRouter);
 
 // server.js
 app.post('/users/refresh', (req, res) => {

@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
+import { string } from "zod";
 
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },           
     price: { type: Number, required: true },          
     description: { type: String },                    
-    category: { type: String },                       
+    category: {
+      type: String,
+    },
     stock: { type: Number, default: 0 },             
     isAvailable: { type: Boolean, default: true },   
     ratings: [{ type: Number }],                     

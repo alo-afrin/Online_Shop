@@ -2,8 +2,6 @@ import express from "express";
 import { authenticate, authorizeRole } from "../middlewares/auth.middleware.js";
 
 import {
-  loginUser,
-  refreshToken,
   getUsers,
   getUser,
   createUser,
@@ -14,9 +12,7 @@ import {
 const router = express.Router();
 
 
-router.post("/register", createUser);   // Fixed
-router.post("/login", loginUser);
-router.post("/refresh", refreshToken);
+router.post("/register", createUser);
 router.post("/",createUser);
 
 router.get("/", authenticate, getUsers);
