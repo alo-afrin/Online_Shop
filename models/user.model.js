@@ -7,10 +7,15 @@ const userSchema = new mongoose.Schema({
   age:      { type: Number, min: 0 },  
   password: { type: String, required: true, minlength: 6 },
   role:     { type: String, enum: ['user', 'admin'], default: 'user' },
-  street:   { type: String, trim: true },
-  city:     { type: String, trim: true },
-  country:  { type: String, trim: true }
-}, { timestamps: true });
+
+   address: {
+      street: { type: String, trim: true },
+      city: { type: String, trim: true },
+      country: { type: String, trim: true }
+    }
+
+}, 
+{ timestamps: true });
 
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
